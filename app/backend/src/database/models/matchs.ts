@@ -20,7 +20,7 @@ export default class Matchs extends Model {
     in_progress: DataTypes.NUMBER,
   }, {
     sequelize: db,
-    modelName: 'Matchs',
+    modelName: 'matchs',
     timestamps: false,
   });
 

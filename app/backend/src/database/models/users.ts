@@ -17,6 +17,6 @@ export default class Users extends Model {
     password: DataTypes.NUMBER,
   }, {
     sequelize: db,
-    modelName: 'Users',
+    modelName: 'users',
     timestamps: false,
   });

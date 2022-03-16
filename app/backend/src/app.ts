@@ -6,8 +6,8 @@ class App {
 
   constructor() {
     // ...
+    this.app = express();
     this.config();
-    // ...
   }
 
   private config():void {

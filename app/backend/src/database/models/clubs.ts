@@ -13,7 +13,7 @@ export default class Clubs extends Model {
     club_name: DataTypes.STRING
   }, {
     sequelize: db,
-    modelName: 'Clubs',
+    modelName: 'clubs',
     timestamps: false,
   });
 

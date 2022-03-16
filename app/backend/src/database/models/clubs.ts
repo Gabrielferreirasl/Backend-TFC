@@ -9,10 +9,8 @@ export default class Clubs extends Model {
   };
 
   Clubs.init({
-    username: DataTypes.STRING,
-    role: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
+    id: DataTypes.NUMBER,
+    club_name: DataTypes.STRING
   }, {
     sequelize: db,
     modelName: 'Clubs',

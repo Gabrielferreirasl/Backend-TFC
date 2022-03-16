@@ -3,7 +3,7 @@ import db from '.';
 // import OtherModel from './OtherModel';
 
 class Example extends Model {
-  // public <campo>!: <tipo>;
+  // public <campo>!: <tipo>; 
 }
 
 Example.init({

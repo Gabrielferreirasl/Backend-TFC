@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import db from '.';
+import Matchs from './matchs';
 
 'use strict';
 export default class Clubs extends Model {
@@ -17,3 +18,5 @@ export default class Clubs extends Model {
     modelName: 'Clubs',
     timestamps: false,
   });
+
+  Clubs.hasMany(Matchs)

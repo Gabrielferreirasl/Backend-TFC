@@ -11,7 +11,7 @@ export default class UsersServices {
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
         return { response: { message: 'Incorrect email or password'},
-    code: serverCodes.TOKEN_BAD_REQUEST };
+    code: serverCodes.TOKEN_OR_FIELD_BAD_REQUEST };
     }
 
     const JWT_SECRET = await fs.readFile('jwt.evaluation.key', 'utf-8');
@@ -24,6 +24,6 @@ export default class UsersServices {
       const newUser: User = user;
       delete newUser.password;
 
-      return { response: { user: { newUser }, token }, code: serverCodes.RECEIVED }
+      return { response: { user: { ...newUser }, token }, code: serverCodes.RECEIVED }
     }
 }

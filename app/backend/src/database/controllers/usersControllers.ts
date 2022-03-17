@@ -9,4 +9,12 @@ export default class UsersControllers {
 
         res.status(code).json(response);
     }
+
+    public static async getRole(req: Request, res: Response) {
+        const { userId } = req.body;
+
+        const { response, code } = await UsersServices.getRole(+userId);
+
+        res.status(code).json(response);
+    }
 }

@@ -26,4 +26,14 @@ export default class UsersServices {
 
       return { response: { user: { ...newUser }, token }, code: serverCodes.RECEIVED }
     }
+
+    public static async getRole(userId: number) {
+        const user = await Users.findOne({ where: { id: userId }, raw: true });
+        const { role } = user as User;
+
+        return {
+            response: role,
+            code: serverCodes.RECEIVED
+        }
+    }
 }

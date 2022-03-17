@@ -56,7 +56,6 @@ describe(getRequirement(5), () => {
     });
 
     await page.waitForTimeout(puppeteerDefs.pause.brief);
-
     expect(user?.id).toBe(validAdmin.id);
     expect(user?.username).toBe(validAdmin.username);
     expect(user?.role).toBe(validAdmin.role);

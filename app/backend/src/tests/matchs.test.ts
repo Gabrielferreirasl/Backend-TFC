@@ -7,6 +7,7 @@ import { app } from '../app';
 import { Response } from 'superagent';
 import Matchs from '../database/models/matchs';
 import matchsMock from './mocks/matchsMock';
+import { Match } from '../database/interfaces/matchsInterfaces';
 
 
 chai.use(chaiHttp);
@@ -17,7 +18,7 @@ const { expect } = chai;
 
 describe('matchs Route', () => {
     const ENDPOINT_MATCHS = '/matchs';
-    const ENDPOINT_MATCHS_INPROGRESS = '/matchs/inProgress';
+    const ENDPOINT_MATCHS_INPROGRESS = '/matchs?inProgress';
     
     describe('"/matchs" Route', () => {
 
@@ -54,7 +55,7 @@ describe('matchs Route', () => {
         });
     });
 
-    describe('"/matchs/inProgress" Route', () => {
+    describe('"/matchs?inProgress" Route', () => {
 
         describe('Quando a requisição é feita com o filtro "true"', async() => {
             let request: Response;
@@ -87,7 +88,7 @@ describe('matchs Route', () => {
                 expect(request.body).to.deep.eq(matchsMock.matchsWithProgressTrue);
             });
             it('Deve retornar todos os matchs com o inProgress: "true"', () => {
-                expect(request.body.every(({ inProgress }) => inProgress === true )).to.be.eq(true);
+                expect(request.body.every(({ inProgress }: Match) => inProgress)).to.be.eq(true);
             });
         });
 
@@ -122,7 +123,7 @@ describe('matchs Route', () => {
                 expect(request.body).to.deep.eq(matchsMock.matchsWithProgressFalse);
             });
             it('Deve retornar todos os matchs com o inProgress: "false"', () => {
-                expect(request.body.every(({ inProgress }) => inProgress === true )).to.be.eq(false);
+                expect(request.body.every(({ inProgress }: Match) => inProgress)).to.be.eq(false);
             });
         });
     });

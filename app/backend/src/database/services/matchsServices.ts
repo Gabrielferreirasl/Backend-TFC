@@ -7,7 +7,7 @@ export default class MatchsServices {
     let where = {};
 
     if (inProgress === 'true' || inProgress === 'false') {
-      where = { inProgress: inProgress === 'true' }
+      where = { inProgress: inProgress === 'true' };
     }
 
     const allMatchs = await Matchs.findAll({

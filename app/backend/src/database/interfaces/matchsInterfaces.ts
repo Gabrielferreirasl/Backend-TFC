@@ -13,6 +13,6 @@ interface Match {
 
 export {
   Match,
-}
+};
 
 export default Query;

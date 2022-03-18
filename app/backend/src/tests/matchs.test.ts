@@ -8,6 +8,7 @@ import { Response } from 'superagent';
 import Matchs from '../database/models/matchs';
 import matchsMock from './mocks/matchsMock';
 import { Match } from '../database/interfaces/matchsInterfaces';
+import * as helpers from './mocks/helpers'
 
 
 chai.use(chaiHttp);
@@ -18,6 +19,7 @@ const { expect } = chai;
 
 describe('matchs Route', () => {
     const ENDPOINT_MATCHS = '/matchs';
+    const ENDPOINT_CREATE_MATCH = '/matchs';
     const ENDPOINT_MATCHS_INPROGRESS = '/matchs?inProgress';
     
     describe('"/matchs" Route', () => {
@@ -124,6 +126,58 @@ describe('matchs Route', () => {
             });
             it('Deve retornar todos os matchs com o inProgress: "false"', () => {
                 expect(request.body.every(({ inProgress }: Match) => inProgress)).to.be.eq(false);
+            });
+        });
+    });
+
+    describe('"/matchs" Route create', () => {
+
+        describe('Quando a requisição é feita com o token valido', async() => {
+            let request: Response;
+            beforeEach(async() => {
+            sinon.stub(Matchs, "create").resolves({ id: 1, ...matchsMock.matchToBeAdded } as any);
+            const Authorization = await helpers.createToken();
+            request = await chai.request(app).post(ENDPOINT_CREATE_MATCH)
+              .set({ Authorization }).send(matchsMock.matchToBeAdded);
+            });
+            
+            afterEach(() => {
+                sinon.restore();
+            });
+
+            it('Deve retornar o status: 201', async() => {
+                expect(request).to.have.status(201);
+            });
+            it('Deve retornar todos os campos', () => {
+                expect(request.body).to.have.property('id');
+                expect(request.body).to.have.property('homeTeam');
+                expect(request.body).to.have.property('homeTeamGoals');
+                expect(request.body).to.have.property('awayTeam');
+                expect(request.body).to.have.property('awayTeamGoals');
+                expect(request.body).to.have.property('inProgress');
+            });
+            it('Deve retornar o match com o id inserido', () => {
+                expect(request.body).to.deep.eq({ id: 1, ...matchsMock.matchToBeAdded });
+            });
+        });
+
+        describe('Quando a requisição é feita com o token invalido', async() => {
+            let request: Response;
+            beforeEach(async() => {
+            sinon.stub(Matchs, "create").resolves({ id: 1, ...matchsMock.matchToBeAdded } as any);
+            request = await chai.request(app).post(ENDPOINT_CREATE_MATCH)
+              .set({ Authorization: 'fdsassa' }).send(matchsMock.matchToBeAdded);
+            });
+            
+            afterEach(() => {
+                sinon.restore();
+            });
+
+            it('Deve retornar o status: 401', async() => {
+                expect(request).to.have.status(401);
+            });
+            it('Deve retornar o message: "Expired or invalid token"', () => {
+                expect(request.body.message).to.be.eq("Expired or invalid token");
             });
         });
     });

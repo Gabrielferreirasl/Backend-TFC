@@ -9,6 +9,7 @@ const route = express.Router();
 route.post('/login', UsersValidations.loginValidation, UsersControllers.login);
 route.get('/clubs', ClubsControllers.getAll);
 route.get('/matchs', MatchsControllers.getAll);
+route.post('/matchs', UsersValidations.tokenValidation, MatchsControllers.create);
 
 route.get('/login/validate', UsersValidations.tokenValidation, UsersControllers.getRole);
 

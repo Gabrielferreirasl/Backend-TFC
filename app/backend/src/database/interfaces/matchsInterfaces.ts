@@ -3,7 +3,7 @@ interface Query {
 }
 
 interface Match {
-  id: number,
+  id?: number,
   homeTeam: number,
   homeTeamGoals: number,
   awayTeam: number,
@@ -11,8 +11,13 @@ interface Match {
   inProgress: boolean,
 }
 
+interface createMatch extends Match {
+  userId?: number,
+}
+
 export {
   Match,
+  createMatch,
 };
 
 export default Query;

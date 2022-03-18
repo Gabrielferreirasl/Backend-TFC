@@ -1,3 +1,4 @@
+import { createMatch } from '../interfaces/matchsInterfaces';
 import Clubs from '../models/clubs';
 import Matchs from '../models/matchs';
 import ServerCodes from '../utils/serverCodes';
@@ -22,5 +23,15 @@ export default class MatchsServices {
       response: allMatchs,
       code: ServerCodes.RECEIVED,
     };
+  }
+
+  public static async create(objMatch: createMatch) {
+    delete objMatch.userId;
+    const { id } = await Matchs.create(objMatch);
+
+    return {
+      response: { id, ...objMatch },
+      code: ServerCodes.CREATED,
+    }
   }
 }

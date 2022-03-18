@@ -10,4 +10,20 @@ export default class ClubsServices {
       code: ServerCodes.RECEIVED,
     };
   }
+
+  public static async getById(id: number) {
+    const errorResponse = { response: { message: 'This Club doesn"t exist' },
+      code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST };
+
+    if (!id || typeof id !== 'number') return errorResponse;
+
+    const club = await Clubs.findOne({
+      where: { id },
+      attributes: ['id', ['club_name', 'clubName']],
+    });
+
+    if (!club) return errorResponse;
+
+    return { response: club, code: ServerCodes.RECEIVED };
+  }
 }

@@ -8,8 +8,8 @@ const route = express.Router();
 route.post('/login', UsersValidations.loginValidation, UsersControllers.login);
 route.get('/clubs', ClubsControllers.getAll);
 
-route.use(UsersValidations.tokenValidation);
+route.get('/login/validate', UsersValidations.tokenValidation, UsersControllers.getRole);
 
-route.get('/login/validate', UsersControllers.getRole);
+route.get('/clubs/:id', ClubsControllers.getById);
 
 export default route;

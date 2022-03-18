@@ -24,12 +24,12 @@ describe('Login Route', () => {
 
     describe('Quando o email e senha não é passado', async() => {
         let request: Response;
-        before(async() => {
+        beforeEach(async() => {
             sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
             request = await chai.request(app).post(ENDPOINT_LOGIN).send();
         });
         
-        after(() => {
+        afterEach(() => {
             sinon.restore();
         });
 
@@ -104,23 +104,24 @@ describe('Login Route', () => {
 
     describe('Quando o email e password estão corretos', async() => {
         let request: Response;
-        beforeEach(async() => {
+        before(async() => {
             sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
             request = await chai.request(app).post(ENDPOINT_LOGIN).send(usersMock.validUserBody);
         });
         
-        afterEach(() => {
+        after(() => {
             sinon.restore();
         });
 
-        it('Deve retornar o status: 200', async() => {
+        it('Deve retornar o status: 200', () => {
             expect(request).to.have.status(200);
         });
-        it('Deve retornar o usuario e o token', () => {
+        it('Deve retornar o usuario e o token', async() => {
             expect(request.body.user).to.have.property('id');
             expect(request.body.user).to.have.property('username');
             expect(request.body.user).to.have.property('role');
             expect(request.body.user).to.have.property('email');
+            expect(request.body).to.have.property('token');
             expect(request.body.user).not.to.have.property('password');
         });
         it('Deve token um token valido', async() => {

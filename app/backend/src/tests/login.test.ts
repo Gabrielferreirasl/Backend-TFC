@@ -44,12 +44,12 @@ describe('Login Route', () => {
 
     describe('Quando o email não é valido', async() => {
         let request: Response;
-        before(async() => {
+        beforeEach(async() => {
             sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
             request = await chai.request(app).post(ENDPOINT_LOGIN).send(usersMock.invalidUserBody.invalidUserEmail);
         });
         
-        after(() => {
+        afterEach(() => {
             sinon.restore();
         });
 
@@ -64,12 +64,12 @@ describe('Login Route', () => {
 
     describe('Quando a password é menor que 6 caracteres', async() => {
         let request: Response;
-        before(async() => {
+        beforeEach(async() => {
             sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
             request = await chai.request(app).post(ENDPOINT_LOGIN).send(usersMock.invalidUserBody.invalidUserPass);
         });
         
-        after(() => {
+        afterEach(() => {
             sinon.restore();
         });
 
@@ -84,12 +84,12 @@ describe('Login Route', () => {
 
     describe('Quando o email está correto mas a password não', async() => {
         let request: Response;
-        before(async() => {
+        beforeEach(async() => {
             sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
             request = await chai.request(app).post(ENDPOINT_LOGIN).send(usersMock.invalidUserBody.invalidUserWrongPass);
         });
         
-        after(() => {
+        afterEach(() => {
             sinon.restore();
         });
 
@@ -104,12 +104,12 @@ describe('Login Route', () => {
 
     describe('Quando o email e password estão corretos', async() => {
         let request: Response;
-        before(async() => {
+        beforeEach(async() => {
             sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
             request = await chai.request(app).post(ENDPOINT_LOGIN).send(usersMock.validUserBody);
         });
         
-        after(() => {
+        afterEach(() => {
             sinon.restore();
         });
 
@@ -136,13 +136,13 @@ describe('"/login/validate" Route', () => {
 
     describe('Quando o authorization é valido', async() => {
         let request: Response;
-        before(async() => {
+        beforeEach(async() => {
             sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
             const Authorization = await helpers.createToken()
             request = await chai.request(app).get(ENDPOINT_LOGIN_VALIDATE).set({ Authorization });
         });
         
-        after(() => {
+        afterEach(() => {
             sinon.restore();
         });
 
@@ -156,12 +156,12 @@ describe('"/login/validate" Route', () => {
 
     describe('Quando o authorization não é valido', async() => {
         let request: Response;
-        before(async() => {
+        beforeEach(async() => {
             sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
             request = await chai.request(app).get(ENDPOINT_LOGIN_VALIDATE).set({ Authorization: "564sdvvs" });
         });
         
-        after(() => {
+        afterEach(() => {
             sinon.restore();
         });
 
@@ -176,12 +176,12 @@ describe('"/login/validate" Route', () => {
 
     describe('Quando o authorization não é enviado', async() => {
         let request: Response;
-        before(async() => {
+        beforeEach(async() => {
             sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
             request = await chai.request(app).get(ENDPOINT_LOGIN_VALIDATE);
         });
         
-        after(() => {
+        afterEach(() => {
             sinon.restore();
         });
 

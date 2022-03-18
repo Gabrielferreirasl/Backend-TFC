@@ -24,5 +24,5 @@ export default class Matchs extends Model {
     timestamps: false,
   });
 
-  Matchs.belongsTo(Clubs, { foreignKey: 'home_team', as: 'homeTeam' });
-  Matchs.belongsTo(Clubs, { foreignKey: 'away_team', as: 'awayTeam' });
+  Matchs.belongsTo(Clubs, { foreignKey: 'home_team', targetKey: 'id', as: 'homeTeam' });
+  Matchs.belongsTo(Clubs, { foreignKey: 'away_team', targetKey: 'id', as: 'awayTeam' });

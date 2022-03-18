@@ -6,7 +6,7 @@ import { app } from '../app';
 
 import { Response } from 'superagent';
 import Clubs from '../database/models/clubs';
-import * as helpers from './mocks/helpers'
+// import * as helpers from './mocks/helpers'
 import clubsMock from './mocks/clubsMock';
 
 
@@ -25,8 +25,7 @@ describe('Clubs Route', () => {
             let request: Response;
             before(async() => {
             sinon.stub(Clubs, "findAll").resolves(clubsMock.allclubs as any);
-            const Authorization = await helpers.createToken()
-            request = await chai.request(app).get(ENDPOINT_CLUBS).set({ Authorization });
+            request = await chai.request(app).get(ENDPOINT_CLUBS);
             });
             
             after(() => {
@@ -37,7 +36,7 @@ describe('Clubs Route', () => {
                 expect(request).to.have.status(200);
             });
             it('Deve retornar todos os clubes', () => {
-                expect(request.body.message).to.deep.eq(clubsMock.allclubs);
+                expect(request.body).to.deep.eq(clubsMock.allclubs);
             });
         });
     });

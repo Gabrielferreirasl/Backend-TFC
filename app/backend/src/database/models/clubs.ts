@@ -9,12 +9,9 @@ export default class Clubs extends Model {
   };
 
   Clubs.init({
-    id: DataTypes.NUMBER,
     club_name: DataTypes.STRING
   }, {
     sequelize: db,
     modelName: 'clubs',
     timestamps: false,
   });
-
-  Clubs.hasMany(Matchs)

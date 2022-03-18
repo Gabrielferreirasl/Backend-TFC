@@ -1,5 +1,6 @@
 import * as express from 'express';
 import ClubsControllers from '../controllers/clubsControllers';
+import MatchsControllers from '../controllers/matchsControllers';
 import UsersControllers from '../controllers/usersControllers';
 import UsersValidations from '../middlewares/usersValidations';
 
@@ -7,6 +8,7 @@ const route = express.Router();
 
 route.post('/login', UsersValidations.loginValidation, UsersControllers.login);
 route.get('/clubs', ClubsControllers.getAll);
+route.get('/matchs', MatchsControllers.getAll);
 
 route.get('/login/validate', UsersValidations.tokenValidation, UsersControllers.getRole);
 

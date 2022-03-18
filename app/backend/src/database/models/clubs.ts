@@ -1,17 +1,24 @@
 import { Model, DataTypes } from 'sequelize';
 import db from '.';
-import Matchs from './matchs';
 
-'use strict';
-export default class Clubs extends Model {
-  public id: number;
-  public club_name: string;
-  };
+class Clubs extends Model {
+}
 
-  Clubs.init({
-    club_name: DataTypes.STRING
-  }, {
-    sequelize: db,
-    modelName: 'clubs',
-    timestamps: false,
-  });
+Clubs.init({
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  club_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+}, {
+  sequelize: db,
+  tableName: 'clubs',
+  timestamps: false,
+});
+
+export default Clubs;

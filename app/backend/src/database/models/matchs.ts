@@ -1,28 +1,73 @@
 import { Model, DataTypes } from 'sequelize';
 import db from '.';
-import Clubs from './clubs'
+import Clubs from './clubs';
 
-'use strict';
-export default class Matchs extends Model {
+class Matchs extends Model {
   public id: number;
-  public home_team: number;
-  public home_team_goals: number;
-  public away_team: number;
-  public away_team_goals: number;
-  in_progress: number;
-  };
 
-  Matchs.init({
-    home_team: DataTypes.NUMBER,
-    home_team_goals: DataTypes.NUMBER,
-    away_team: DataTypes.NUMBER,
-    away_team_goals: DataTypes.NUMBER,
-    in_progress: DataTypes.NUMBER,
-  }, {
-    sequelize: db,
-    modelName: 'matchs',
-    timestamps: false,
-  });
+  public homeTeam: number;
 
-  Matchs.belongsTo(Clubs, { foreignKey: 'home_team', targetKey: 'id', as: 'homeTeam' });
-  Matchs.belongsTo(Clubs, { foreignKey: 'away_team', targetKey: 'id', as: 'awayTeam' });
+  public homeTeamGoals: number;
+
+  public awayTeam: number;
+
+  public awayTeamGoals: number;
+
+  public inProgress: number;
+}
+
+Matchs.init({
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  homeTeam: {
+    field: 'home_team',
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+    references: {
+      model: 'clubs',
+      key: 'id',
+    },
+  },
+  homeTeamGoals: {
+    field: 'home_team_goals',
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  awayTeam: {
+    field: 'away_team',
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+    references: {
+      model: 'clubs',
+      key: 'id',
+    },
+  },
+  awayTeamGoals: {
+    field: 'away_team_goals',
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  inProgress: {
+    field: 'in_progress',
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+}, {
+  underscored: true,
+  sequelize: db,
+  tableName: 'matchs',
+  timestamps: false,
+});
+
+Matchs.belongsTo(Clubs, { foreignKey: 'home_team', targetKey: 'id', as: 'homeClub' });
+Matchs.belongsTo(Clubs, { foreignKey: 'away_team', targetKey: 'id', as: 'awayClub' });
+
+export default Matchs;

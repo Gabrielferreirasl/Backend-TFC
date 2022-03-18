@@ -7,25 +7,19 @@ import { app } from '../app';
 import { Response } from 'superagent';
 import Users from '../database/models/users';
 import usersMock from './mocks/usersMock';
-import * as fs from 'fs/promises';
-import jwt = require('jsonwebtoken');
+import * as helpers from './mocks/helpers'
+
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-const verifyToken = async (token: string) => {
-    try {
-        const JWT_SECRET = await fs.readFile('jwt.evaluation.key', 'utf-8');
-        const validation = jwt.verify(token, JWT_SECRET);
-        return [true, validation];
-        } catch (_) {
-        return [false];
-        }
-}
+
 
 describe('Login Route', () => {
     const ENDPOINT_LOGIN = '/login';
+    const ENDPOINT_LOGIN_VALIDATE = '/login/validate';
+    
     describe('"/login" Route', () => {
 
     describe('Quando o email e senha não é passado', async() => {
@@ -131,39 +125,73 @@ describe('Login Route', () => {
         });
         it('Deve token um token valido', async() => {
             expect(request.body).to.have.property('token');
-            const [tokenIsValid, user] = await verifyToken(request.body.token)
+            const [tokenIsValid, user] = await helpers.verifyToken(request.body.token)
             expect(tokenIsValid).to.eq(true);
             expect(user).to.have.property('id');
         });
     });
-})
-  /**
-   * Exemplo do uso de stubs com tipos
-   */
+});
 
-  // let chaiHttpResponse: Response;
+describe('"/login/validate" Route', () => {
 
-  // before(async () => {
-  //   sinon
-  //     .stub(Example, "findOne")
-  //     .resolves({
-  //       ...<Seu mock>
-  //     } as Example);
-  // });
+    describe('Quando o authorization é valido', async() => {
+        let request: Response;
+        before(async() => {
+            sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
+            const Authorization = await helpers.createToken()
+            request = await chai.request(app).get(ENDPOINT_LOGIN_VALIDATE).set({ Authorization });
+        });
+        
+        after(() => {
+            sinon.restore();
+        });
 
-  // after(()=>{
-  //   (Example.findOne as sinon.SinonStub).restore();
-  // })
+        it('Deve retornar o status: 200', async() => {
+            expect(request).to.have.status(200);
+        });
+        it('Deve retornar o role', () => {
+            expect(request.body).to.eq(usersMock.realUser.role);
+        });
+    });
 
-  // it('...', async () => {
-  //   chaiHttpResponse = await chai
-  //      .request(app)
-  //      ...
+    describe('Quando o authorization não é valido', async() => {
+        let request: Response;
+        before(async() => {
+            sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
+            request = await chai.request(app).get(ENDPOINT_LOGIN_VALIDATE).set({ Authorization: "564sdvvs" });
+        });
+        
+        after(() => {
+            sinon.restore();
+        });
 
-  //   expect(...)
-  // });
+        it('Deve retornar o status: 401', async() => {
+            expect(request).to.have.status(401);
+        });
+        it('Deve retornar o message: "Expired or invalid token"', () => {
+            expect(request.body).to.have.property('message');
+            expect(request.body.message).to.eq("Expired or invalid token");
+        });
+    });
 
-//   it('Seu sub-teste', () => {
-//     expect(false).to.be.eq(true);
-//   });
+    describe('Quando o authorization não é enviado', async() => {
+        let request: Response;
+        before(async() => {
+            sinon.stub(Users, "findOne").resolves(usersMock.realUser as any);
+            request = await chai.request(app).get(ENDPOINT_LOGIN_VALIDATE);
+        });
+        
+        after(() => {
+            sinon.restore();
+        });
+
+        it('Deve retornar o status: 401', async() => {
+            expect(request).to.have.status(401);
+        });
+        it('Deve retornar o message: "Token not found"', () => {
+            expect(request.body).to.have.property('message');
+            expect(request.body.message).to.eq("Token not found");
+        });
+    });
+});
 });

@@ -1,2 +1,5 @@
 bcryptjs
 @types/bcryptjs
+joi
+@types/joi
+body-parser

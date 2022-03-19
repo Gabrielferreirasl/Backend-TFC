@@ -22,6 +22,7 @@ describe('matchs Route', () => {
     const ENDPOINT_MATCHS = '/matchs';
     const ENDPOINT_CREATE_MATCH = '/matchs';
     const ENDPOINT_MATCHS_INPROGRESS = '/matchs?inProgress';
+    const ENDPOINT_MATCHS_FINISH = '/matchs';
     
     describe('"/matchs" Route', () => {
 
@@ -222,6 +223,60 @@ describe('matchs Route', () => {
             });
             it('Deve retornar o message: "There is no team with such id!"', () => {
                 expect(request.body.message).to.be.eq("There is no team with such id!");
+            });
+        });
+    });
+
+    describe('"/matchs/:id/finish" Route', () => {
+
+        describe('Quando a requisição é feita com o token valido', async() => {
+            let request: Response;
+            beforeEach(async() => {
+            sinon.stub(Matchs, "update").resolves(matchsMock.matchFinished as any);
+            const Authorization = await helpers.createToken();
+            const endpoint = `${ENDPOINT_MATCHS_FINISH}/1/finsh`;
+            request = await chai.request(app).patch(endpoint)
+              .set({ Authorization });
+            });
+            
+            afterEach(() => {
+                sinon.restore();
+            });
+
+            it('Deve retornar o status: 200', async() => {
+                expect(request).to.have.status(200);
+            });
+            it('Deve retornar todos os campos', () => {
+                expect(request.body).to.have.property('id');
+                expect(request.body).to.have.property('homeTeam');
+                expect(request.body).to.have.property('homeTeamGoals');
+                expect(request.body).to.have.property('awayTeam');
+                expect(request.body).to.have.property('awayTeamGoals');
+                expect(request.body).to.have.property('inProgress');
+            });
+            it('Deve retornar o match finalizado', () => {
+                expect(request.body).to.deep.eq(matchsMock.matchFinished);
+            });
+        });
+
+        describe('Quando a requisição é feita com o token invalido', async() => {
+            let request: Response;
+            beforeEach(async() => {
+            sinon.stub(Matchs, "update").resolves({} as any);
+            const endpoint = `${ENDPOINT_MATCHS_FINISH}/1/finsh`;
+            request = await chai.request(app).patch(endpoint)
+                .set({ Authorization: 'sadasda' });
+            });
+            
+            afterEach(() => {
+                sinon.restore();
+            });
+
+            it('Deve retornar o status: 401', async() => {
+                expect(request).to.have.status(401);
+            });
+            it('Deve retornar o message: "Expired or invalid token"', () => {
+                expect(request.body.message).to.be.eq("Expired or invalid token");
             });
         });
     });

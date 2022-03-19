@@ -43,7 +43,8 @@ export default class MatchsServices {
     if (awayTeam.code === error || homeTeam.code === error) {
       return awayTeam.code === error ? awayTeam : homeTeam;
     }
-
+    
+    objMatch.inProgress = true;
     const { id } = await Matchs.create(objMatch);
 
     return {

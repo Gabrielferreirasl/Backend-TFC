@@ -134,7 +134,7 @@ describe('matchs Route', () => {
 
     describe('"/matchs" Route create', () => {
 
-        describe('Quando a requisição é feita com o token valido', async() => {
+        describe('Quando a requisição é feita corretamente', async() => {
             let request: Response;
             beforeEach(async() => {
             sinon.stub(Matchs, "create").resolves({ id: 1, ...matchsMock.matchToBeAdded } as any);
@@ -160,26 +160,6 @@ describe('matchs Route', () => {
             });
             it('Deve retornar o match com o id inserido', () => {
                 expect(request.body).to.deep.eq({ id: 1, ...matchsMock.matchToBeAdded });
-            });
-        });
-
-        describe('Quando a requisição é feita com o token invalido', async() => {
-            let request: Response;
-            beforeEach(async() => {
-            sinon.stub(Matchs, "create").resolves({ id: 1, ...matchsMock.matchToBeAdded } as any);
-            request = await chai.request(app).post(ENDPOINT_CREATE_MATCH)
-              .set({ Authorization: 'fdsassa' }).send(matchsMock.matchToBeAdded);
-            });
-            
-            afterEach(() => {
-                sinon.restore();
-            });
-
-            it('Deve retornar o status: 401', async() => {
-                expect(request).to.have.status(401);
-            });
-            it('Deve retornar o message: "Expired or invalid token"', () => {
-                expect(request.body.message).to.be.eq("Expired or invalid token");
             });
         });
 

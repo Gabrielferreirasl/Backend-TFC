@@ -180,5 +180,26 @@ describe('matchs Route', () => {
                 expect(request.body.message).to.be.eq("Expired or invalid token");
             });
         });
+
+        describe('Quando a requisição é feita com times iguais', async() => {
+            let request: Response;
+            beforeEach(async() => {
+                sinon.stub(Matchs, "create").resolves({} as any);
+                const Authorization = await helpers.createToken();
+                request = await chai.request(app).post(ENDPOINT_CREATE_MATCH)
+                  .set({ Authorization }).send(matchsMock.matchToBeAddedEqualTeams);
+            });
+            
+            afterEach(() => {
+                sinon.restore();
+            });
+
+            it('Deve retornar o status: 401', async() => {
+                expect(request).to.have.status(401);
+            });
+            it('Deve retornar o message: "It is not possible to create a match with two equal teams"', () => {
+                expect(request.body.message).to.be.eq("It is not possible to create a match with two equal teams");
+            });
+        });
     });
 });

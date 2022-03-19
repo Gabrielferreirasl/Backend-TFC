@@ -96,4 +96,11 @@ export default {
         "awayTeamGoals": 2,
         "inProgress": true,
       },
+      matchToBeAddedEqualTeams: {
+        "homeTeam": 8,
+        "awayTeam": 8,
+        "homeTeamGoals": 2,
+        "awayTeamGoals": 2,
+        "inProgress": true,
+      },
 }

@@ -27,6 +27,12 @@ export default class MatchsServices {
 
   public static async create(objMatch: createMatch) {
     delete objMatch.userId;
+
+    if (objMatch.awayTeam === objMatch.homeTeam) {
+      return { response:
+        { message: 'It is not possible to create a match with two equal teams' },
+          code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST }
+    }
     const { id } = await Matchs.create(objMatch);
 
     return {

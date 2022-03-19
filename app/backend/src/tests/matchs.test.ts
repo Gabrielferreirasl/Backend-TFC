@@ -220,8 +220,8 @@ describe('matchs Route', () => {
             it('Deve retornar o status: 401', async() => {
                 expect(request).to.have.status(401);
             });
-            it('Deve retornar o message: "Team not found"', () => {
-                expect(request.body.message).to.be.eq("Team not found");
+            it('Deve retornar o message: "There is no team with such id!"', () => {
+                expect(request.body.message).to.be.eq("There is no team with such id!");
             });
         });
     });

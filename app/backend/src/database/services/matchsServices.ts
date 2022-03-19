@@ -30,18 +30,19 @@ export default class MatchsServices {
     const error = ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST;
 
     if (objMatch.awayTeam === objMatch.homeTeam) {
-      return { response:
-        { message: 'It is not possible to create a match with two equal teams' },
-      code: error,
+      return { response: { message: 'It is not possible to create a match with two equal teams' },
+        code: error,
       };
     }
 
-    const [{ code, response }, { code: code2 }] = await Promise.all([
+    const [awayTeam, homeTeam] = await Promise.all([
       ClubsServices.getById(objMatch.awayTeam),
       ClubsServices.getById(objMatch.homeTeam),
     ]);
 
-    if (code === error || code2 === error) return { response, code };
+    if (awayTeam.code === error || homeTeam.code === error) {
+      return awayTeam.code === error ? awayTeam : homeTeam;
+    }
 
     const { id } = await Matchs.create(objMatch);
 

@@ -12,8 +12,10 @@ export default class ClubsServices {
   }
 
   public static async getById(id: number) {
-    const errorResponse = { response: { message: 'Team not found' },
-      code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST };
+    const errorResponse = { response:
+      { message: 'There is no team with such id!' },
+    code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST,
+    };
 
     if (!id || typeof id !== 'number') return errorResponse;
 

@@ -81,9 +81,9 @@ describe('Clubs Route', () => {
             it('Deve retornar o status: 401', async() => {
                 expect(request).to.have.status(401);
             });
-            it('Deve retornar a mensagem: "Team not found"', () => {
+            it('Deve retornar a mensagem: "There is no team with such id!"', () => {
                 expect(request.body).to.have.property('message');
-                expect(request.body.message).to.be.eq('Team not found');
+                expect(request.body.message).to.be.eq('There is no team with such id!');
             });
         });
 
@@ -102,9 +102,9 @@ describe('Clubs Route', () => {
             it('Deve retornar o status: 401', async() => {
                 expect(request).to.have.status(401);
             });
-            it('Deve retornar a mensagem: "Team not found"', () => {
+            it('Deve retornar a mensagem: "There is no team with such id!"', () => {
                 expect(request.body).to.have.property('message');
-                expect(request.body.message).to.be.eq('Team not found');
+                expect(request.body.message).to.be.eq('There is no team with such id!');
             });
         });
     });

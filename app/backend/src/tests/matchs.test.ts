@@ -9,6 +9,7 @@ import Matchs from '../database/models/matchs';
 import matchsMock from './mocks/matchsMock';
 import { Match } from '../database/interfaces/matchsInterfaces';
 import * as helpers from './mocks/helpers'
+import Clubs from '../database/models/clubs';
 
 
 chai.use(chaiHttp);
@@ -199,6 +200,28 @@ describe('matchs Route', () => {
             });
             it('Deve retornar o message: "It is not possible to create a match with two equal teams"', () => {
                 expect(request.body.message).to.be.eq("It is not possible to create a match with two equal teams");
+            });
+        });
+
+        describe('Quando a requisição é feita com um time que não existe', async() => {
+            let request: Response;
+            beforeEach(async() => {
+                sinon.stub(Matchs, "create").resolves({} as any);
+                sinon.stub(Clubs, "findOne").resolves(null as any);
+                const Authorization = await helpers.createToken();
+                request = await chai.request(app).post(ENDPOINT_CREATE_MATCH)
+                  .set({ Authorization }).send(matchsMock.matchToBeAdded);
+            });
+            
+            afterEach(() => {
+                sinon.restore();
+            });
+
+            it('Deve retornar o status: 401', async() => {
+                expect(request).to.have.status(401);
+            });
+            it('Deve retornar o message: "Team not found"', () => {
+                expect(request.body.message).to.be.eq("Team not found");
             });
         });
     });

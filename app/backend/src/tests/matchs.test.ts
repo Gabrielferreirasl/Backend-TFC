@@ -286,10 +286,8 @@ describe('matchs Route', () => {
             let request: Response;
             beforeEach(async() => {
             sinon.stub(Matchs, "update").resolves({} as any);
-            sinon.stub(Matchs, "findOne").resolves(null as any);
             const Authorization = await helpers.createToken();
-            const endpoint = `${ENDPOINT_MATCHS_FINISH}/9/finish`;
-            request = await chai.request(app).patch(endpoint)
+            request = await chai.request(app).patch(`${ENDPOINT_MATCHS}/1`)
                 .set({ Authorization });
             });
             
@@ -297,11 +295,34 @@ describe('matchs Route', () => {
                 sinon.restore();
             });
 
-            it('Deve retornar o status: 401', async() => {
-                expect(request).to.have.status(401);
+            it('Deve retornar o status: 200', async() => {
+                expect(request).to.have.status(200);
             });
             it('Deve retornar o message: "There is no match with such id!"', () => {
                 expect(request.body.message).to.be.eq("There is no match with such id!");
+            });
+        });
+    });
+
+    describe('"/matchs/:id" Route', () => {
+
+        describe('Quando a requisição é feita com os gols', async() => {
+            let request: Response;
+            beforeEach(async() => {
+            sinon.stub(Matchs, "update").resolves(0 as any);
+            const endpoint = `${ENDPOINT_MATCHS}/1`;
+            request = await chai.request(app).patch(endpoint).send(matchsMock.editMatch);
+            });
+            
+            afterEach(() => {
+                sinon.restore();
+            });
+
+            it('Deve retornar o status: 200', async() => {
+                expect(request).to.have.status(200);
+            });
+            it('Deve retornar o message: "Goals updated"', () => {
+                expect(request.body.message).to.be.eq("Goals updated");
             });
         });
     });

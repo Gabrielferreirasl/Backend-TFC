@@ -111,4 +111,8 @@ export default {
         "awayTeamGoals": 2,
         "inProgress": false,
       },
+      editMatch: {
+        "homeTeamGoals": 3,
+        "awayTeamGoals": 1
+      },
 }

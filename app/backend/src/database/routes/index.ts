@@ -6,6 +6,7 @@ import UsersValidations from '../middlewares/usersValidations';
 
 const route = express.Router();
 
+route.patch('/matchs/:id/finish', UsersValidations.tokenValidation, MatchsControllers.finishMatch);
 route.post('/login', UsersValidations.loginValidation, UsersControllers.login);
 route.get('/clubs', ClubsControllers.getAll);
 route.get('/matchs', MatchsControllers.getAll);
@@ -14,6 +15,5 @@ route.post('/matchs', UsersValidations.tokenValidation, MatchsControllers.create
 route.get('/login/validate', UsersValidations.tokenValidation, UsersControllers.getRole);
 
 route.get('/clubs/:id', ClubsControllers.getById);
-route.patch('/matchs/:id/finish', UsersValidations.loginValidation, MatchsControllers.finishMatch);
 
 export default route;

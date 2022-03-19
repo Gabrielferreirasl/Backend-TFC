@@ -11,13 +11,13 @@ interface Match {
   inProgress: boolean,
 }
 
-interface createMatch extends Match {
+interface CreateMatch extends Match {
   userId?: number,
 }
 
 export {
   Match,
-  createMatch,
+  CreateMatch,
 };
 
 export default Query;

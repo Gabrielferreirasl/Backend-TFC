@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Query, { createMatch } from '../interfaces/matchsInterfaces';
+import Query, { CreateMatch } from '../interfaces/matchsInterfaces';
 import MatchsServices from '../services/matchsServices';
 
 export default class MatchsControllers {
@@ -12,7 +12,7 @@ export default class MatchsControllers {
   }
 
   public static async create(req: Request, res: Response) {
-    const objMatch = req.body as createMatch;
+    const { userId, ...objMatch } = req.body as CreateMatch;
 
     const { response, code } = await MatchsServices.create(objMatch);
 

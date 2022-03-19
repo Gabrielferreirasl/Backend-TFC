@@ -14,5 +14,6 @@ route.post('/matchs', UsersValidations.tokenValidation, MatchsControllers.create
 route.get('/login/validate', UsersValidations.tokenValidation, UsersControllers.getRole);
 
 route.get('/clubs/:id', ClubsControllers.getById);
+route.patch('/matchs/:id/finish', UsersValidations.loginValidation, MatchsControllers.finishMatch);
 
 export default route;

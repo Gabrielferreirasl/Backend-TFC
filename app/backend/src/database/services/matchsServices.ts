@@ -51,4 +51,31 @@ export default class MatchsServices {
       code: ServerCodes.CREATED,
     };
   }
+
+  public static async getById(id: number) {
+    if (Number.isNaN(id)) {
+      return { response: { message: 'id must be a number' },
+     code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST };
+    }
+
+    const match = await Matchs.findOne({ where: { id } });
+
+  if (!match) {
+      return { response: { message: 'There is no match with such id!' },
+     code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST };
+  }
+  return { response: match, code: ServerCodes.RECEIVED };
+  }
+
+  public static async finishMatch(id: number) {
+    const validate = await MatchsServices.getById(id);
+
+    if (validate.code === ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST) return validate;
+
+    await Matchs.update({ inProgress: false }, { where: { id } });
+
+    const match = await MatchsServices.getById(id);
+
+    return match;
+  }
 }

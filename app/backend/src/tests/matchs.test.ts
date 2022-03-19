@@ -232,9 +232,10 @@ describe('matchs Route', () => {
         describe('Quando a requisição é feita com o token valido', async() => {
             let request: Response;
             beforeEach(async() => {
-            sinon.stub(Matchs, "update").resolves(matchsMock.matchFinished as any);
+            sinon.stub(Matchs, "update").resolves(0 as any);
+            sinon.stub(Matchs, "findOne").resolves(matchsMock.matchFinished as any);
             const Authorization = await helpers.createToken();
-            const endpoint = `${ENDPOINT_MATCHS_FINISH}/1/finsh`;
+            const endpoint = `${ENDPOINT_MATCHS_FINISH}/1/finish`;
             request = await chai.request(app).patch(endpoint)
               .set({ Authorization });
             });
@@ -263,7 +264,8 @@ describe('matchs Route', () => {
             let request: Response;
             beforeEach(async() => {
             sinon.stub(Matchs, "update").resolves({} as any);
-            const endpoint = `${ENDPOINT_MATCHS_FINISH}/1/finsh`;
+            sinon.stub(Matchs, "findOne").resolves({} as any);
+            const endpoint = `${ENDPOINT_MATCHS_FINISH}/1/finish`;
             request = await chai.request(app).patch(endpoint)
                 .set({ Authorization: 'sadasda' });
             });
@@ -277,6 +279,29 @@ describe('matchs Route', () => {
             });
             it('Deve retornar o message: "Expired or invalid token"', () => {
                 expect(request.body.message).to.be.eq("Expired or invalid token");
+            });
+        });
+
+        describe('Quando a requisição é feita com um Match que não existe', async() => {
+            let request: Response;
+            beforeEach(async() => {
+            sinon.stub(Matchs, "update").resolves({} as any);
+            sinon.stub(Matchs, "findOne").resolves(null as any);
+            const Authorization = await helpers.createToken();
+            const endpoint = `${ENDPOINT_MATCHS_FINISH}/9/finish`;
+            request = await chai.request(app).patch(endpoint)
+                .set({ Authorization });
+            });
+            
+            afterEach(() => {
+                sinon.restore();
+            });
+
+            it('Deve retornar o status: 401', async() => {
+                expect(request).to.have.status(401);
+            });
+            it('Deve retornar o message: "There is no match with such id!"', () => {
+                expect(request.body.message).to.be.eq("There is no match with such id!");
             });
         });
     });

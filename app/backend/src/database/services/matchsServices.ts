@@ -1,4 +1,4 @@
-import { CreateMatch } from '../interfaces/matchsInterfaces';
+import { CreateMatch, UpdateMatch } from '../interfaces/matchsInterfaces';
 import Clubs from '../models/clubs';
 import Matchs from '../models/matchs';
 import ServerCodes from '../utils/serverCodes';
@@ -55,16 +55,16 @@ export default class MatchsServices {
   public static async getById(id: number) {
     if (Number.isNaN(id)) {
       return { response: { message: 'id must be a number' },
-     code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST };
+        code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST };
     }
 
     const match = await Matchs.findOne({ where: { id } });
 
-  if (!match) {
+    if (!match) {
       return { response: { message: 'There is no match with such id!' },
-     code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST };
-  }
-  return { response: match, code: ServerCodes.RECEIVED };
+        code: ServerCodes.TOKEN_OR_FIELD_BAD_REQUEST };
+    }
+    return { response: match, code: ServerCodes.RECEIVED };
   }
 
   public static async finishMatch(id: number) {
@@ -77,5 +77,11 @@ export default class MatchsServices {
     const match = await MatchsServices.getById(id);
 
     return match;
+  }
+
+  public static async updateMatch({ id, homeTeamGoals, awayTeamGoals }: UpdateMatch) {
+    await Matchs.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
+
+    return { response: { message: 'Goals updated' }, code: ServerCodes.RECEIVED };
   }
 }

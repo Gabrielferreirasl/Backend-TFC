@@ -15,9 +15,16 @@ interface CreateMatch extends Match {
   userId?: number,
 }
 
+interface UpdateMatch {
+  homeTeamGoals: number,
+  awayTeamGoals: number,
+  id: number;
+}
+
 export {
   Match,
   CreateMatch,
+  UpdateMatch,
 };
 
 export default Query;

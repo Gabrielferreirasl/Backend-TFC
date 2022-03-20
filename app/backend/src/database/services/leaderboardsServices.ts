@@ -5,10 +5,10 @@ import ClubsServices from './clubsServices';
 import MatchsServices from './matchsServices';
 
 export default class LeaderboardsServices {
-  public static async geAllByHome() {
+  public static async getAll({ filter, type }: Filter) {
     const leaderboard = await LeaderboardsServices.getAllMatchsAndClubs({
-      filter: true,
-      type: 'home',
+      filter,
+      type,
     });
 
     return { response: leaderboard, code: ServerCodes.RECEIVED };

@@ -1,6 +1,6 @@
 import * as express from 'express';
 import ClubsControllers from '../controllers/clubsControllers';
-import LeaderboardsControllers from '../controllers/LeaderboardsControllers';
+import LeaderboardsControllers from '../controllers/leaderboardsControllers';
 import MatchsControllers from '../controllers/matchsControllers';
 import UsersControllers from '../controllers/usersControllers';
 import UsersValidations from '../middlewares/usersValidations';
@@ -13,7 +13,8 @@ route.post('/login', UsersValidations.loginValidation, UsersControllers.login);
 route.get('/clubs', ClubsControllers.getAll);
 route.get('/matchs', MatchsControllers.getAll);
 route.post('/matchs', MatchsControllers.create);
-route.get('/leaderboard/home', LeaderboardsControllers.geAllByHome);
+route.get('/leaderboard/home', LeaderboardsControllers.getAll);
+route.get('/leaderboard/away', LeaderboardsControllers.getAll);
 
 route.get('/login/validate', UsersValidations.tokenValidation, UsersControllers.getRole);
 

@@ -62,7 +62,7 @@ describe(getRequirement(23), () => {
   });
 });
 
-describe(getRequirement(24), () => {
+describe.only(getRequirement(24), () => {
   it('Será validado que ao finalizar uma partida é alterado no banco de dados e na página', async () => {
 
     const dadosInsert = {

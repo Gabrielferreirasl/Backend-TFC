@@ -2,6 +2,10 @@ interface Query {
   inProgress: string,
 }
 
+interface ClubName {
+  clubName: string,
+}
+
 interface Match {
   id?: number,
   homeTeam: number,
@@ -9,6 +13,8 @@ interface Match {
   awayTeam: number,
   awayTeamGoals: number,
   inProgress: boolean,
+  homeClub: ClubName,
+  awayClub: ClubName,
 }
 
 interface CreateMatch extends Match {

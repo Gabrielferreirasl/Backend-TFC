@@ -1,9 +1,11 @@
+import Club from '../interfaces/clubsInterfaces';
 import Clubs from '../models/clubs';
 import ServerCodes from '../utils/serverCodes';
 
 export default class ClubsServices {
   public static async getAll() {
-    const clubs = await Clubs.findAll({ attributes: ['id', ['club_name', 'clubName']] });
+    const rows = await Clubs.findAll({ attributes: ['id', ['club_name', 'clubName']] });
+    const clubs = rows as unknown as Club[];
 
     return {
       response: clubs,

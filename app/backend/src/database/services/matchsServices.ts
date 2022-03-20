@@ -1,4 +1,4 @@
-import { CreateMatch, UpdateMatch } from '../interfaces/matchsInterfaces';
+import { CreateMatch, Match, UpdateMatch } from '../interfaces/matchsInterfaces';
 import Clubs from '../models/clubs';
 import Matchs from '../models/matchs';
 import ServerCodes from '../utils/serverCodes';
@@ -12,7 +12,7 @@ export default class MatchsServices {
       where = { inProgress: inProgress === 'true' };
     }
 
-    const allMatchs = await Matchs.findAll({
+    const allMatchs: Match[] = await Matchs.findAll({
       include: [
         { model: Clubs, as: 'homeClub', attributes: [['club_name', 'clubName']] },
         { model: Clubs, as: 'awayClub', attributes: [['club_name', 'clubName']] },
@@ -43,7 +43,6 @@ export default class MatchsServices {
     if (awayTeam.code === error || homeTeam.code === error) {
       return awayTeam.code === error ? awayTeam : homeTeam;
     }
-
     const { id } = await Matchs.create(objMatch);
 
     return {

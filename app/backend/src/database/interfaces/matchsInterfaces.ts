@@ -12,9 +12,9 @@ interface Match {
   homeTeamGoals: number,
   awayTeam: number,
   awayTeamGoals: number,
-  inProgress: boolean,
-  homeClub: ClubName,
-  awayClub: ClubName,
+  inProgress: boolean | number,
+  homeClub?: ClubName,
+  awayClub?: ClubName,
 }
 
 interface CreateMatch extends Match {

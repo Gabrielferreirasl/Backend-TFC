@@ -1,6 +1,7 @@
 import Club, { ClubStatus } from '../interfaces/clubsInterfaces';
 import { Match } from '../interfaces/matchsInterfaces';
 import getStatusFromAllClubs from './getStatusFromAllClubs';
+import Filter from '../interfaces/leaderboardInterfaces';
 
 // Tiebreaker ====> 1º totalVictories; 2º goalsBalance; 3º goalsFavor; 4º goalsOwn.
 
@@ -27,8 +28,8 @@ const handleTiebreaker = (club1: ClubStatus, club2: ClubStatus): number => {
   return winner;
 };
 
-const generateLeaderboard = (matchs: Match[], clubs: Club[]) => {
-  const allClubs: ClubStatus[] = getStatusFromAllClubs(matchs, clubs);
+const generateLeaderboard = (matchs: Match[], clubs: Club[], filter: Filter) => {
+  const allClubs: ClubStatus[] = getStatusFromAllClubs(matchs, clubs, filter);
 
   allClubs.sort((club1, club2) => {
     const points = club2.totalPoints - club1.totalPoints;
@@ -43,5 +44,3 @@ const generateLeaderboard = (matchs: Match[], clubs: Club[]) => {
 };
 
 export default generateLeaderboard;
-
-// console.log(generalFilter(leaderboardsMock.allMatchs,clubsMock.allclubs));

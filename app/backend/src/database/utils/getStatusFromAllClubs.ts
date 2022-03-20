@@ -1,9 +1,21 @@
 import Club, { ClubStatus, ClubBalanceStatus } from '../interfaces/clubsInterfaces';
+import Filter from '../interfaces/leaderboardInterfaces';
 import { Match } from '../interfaces/matchsInterfaces';
 
-const getAllMatchsFromClub = (matchs: Match[], { id }: Club) =>
-  matchs.filter(({ homeTeam, awayTeam, inProgress }) =>
-    (homeTeam === id || id === awayTeam) && !inProgress);
+const getAllMatchsFromClub = (matchs: Match[], { id }: Club, { filter, type }: Filter) =>
+  matchs.filter(({ homeTeam, awayTeam, inProgress }) => {
+    if (filter) {
+      switch (type) {
+        case 'away':
+          return id === awayTeam && !inProgress;
+        case 'home':
+          return id === homeTeam && !inProgress;
+        default:
+          break;
+      }
+    }
+    return (homeTeam === id || id === awayTeam) && !inProgress;
+  });
 
 const verifyWinner = (match: Match, id: number): number => {
   if (match.homeTeamGoals > match.awayTeamGoals) {
@@ -58,9 +70,9 @@ const WIN = 3;
 const LOSS = 0;
 const DRAW = 1;
 
-const getStatusFromAllClubs = (matchs: Match[], clubs: Club[]): ClubStatus[] =>
+const getStatusFromAllClubs = (matchs: Match[], clubs: Club[], filter: Filter): ClubStatus[] =>
   clubs.map((club) => {
-    const allMatchs: Match[] = getAllMatchsFromClub(matchs, club);
+    const allMatchs: Match[] = getAllMatchsFromClub(matchs, club, filter);
 
     const totalPoints = handletotalPoints(allMatchs, club.id);
     const { goalsBalance, goalsFavor, goalsOwn } = getFavorAndOwnGoalsBalance(allMatchs, club.id);

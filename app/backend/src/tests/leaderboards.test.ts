@@ -7,21 +7,25 @@ import { app } from '../app';
 import { Response } from 'superagent';
 import Matchs from '../database/models/matchs';
 import leaderboardsMock from './mocks/leaderboardsMock';
+import Clubs from '../database/models/clubs';
+import matchsMock from './mocks/matchsMock';
+import clubsMock from './mocks/clubsMock';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('matchs Route', () => {
-    const ENDPOINT_MATCHS = '/leaderboard';
+describe('Leaderboard Route', () => {
+    const ENDPOINT_LEADERBOARD = '/leaderboard';
     
     describe('"/leaderboard/home" Route', () => {
 
-        describe('Quando a requisição é feita sem filtros', async() => {
+        describe('Quando a requisição é feita com o filtro "home"', async() => {
             let request: Response;
             beforeEach(async() => {
-            sinon.stub(Matchs, "findAll").resolves(leaderboardsMock.validLeaderboard as any);
-            request = await chai.request(app).get(ENDPOINT_MATCHS);
+            sinon.stub(Matchs, "findAll").resolves(matchsMock.allMatchs as any);
+            sinon.stub(Clubs, "findAll").resolves(clubsMock.allclubs as any);
+            request = await chai.request(app).get(`${ENDPOINT_LEADERBOARD}/home`);
             });
             
             afterEach(() => {
@@ -32,20 +36,21 @@ describe('matchs Route', () => {
                 expect(request).to.have.status(200);
             });
             it('Deve retornar todos os campos', () => {
-                expect(request.body[0]).to.have.property('id');
-                expect(request.body[0]).to.have.property('homeTeam');
-                expect(request.body[0]).to.have.property('homeTeamGoals');
-                expect(request.body[0]).to.have.property('awayTeam');
-                expect(request.body[0]).to.have.property('awayTeamGoals');
-                expect(request.body[0]).to.have.property('inProgress');
-                expect(request.body[0]).to.have.property('homeClub');
-                expect(request.body[0]).to.have.property('awayClub');
-                expect(request.body[0].awayClub).to.have.property('clubName');
-                expect(request.body[0].homeClub).to.have.property('clubName');
+                expect(request.body[0]).to.have.property('name');
+                expect(request.body[0]).to.have.property('totalPoints');
+                expect(request.body[0]).to.have.property('totalGames');
+                expect(request.body[0]).to.have.property('totalVictories');
+                expect(request.body[0]).to.have.property('totalDraws');
+                expect(request.body[0]).to.have.property('totalLosses');
+                expect(request.body[0]).to.have.property('goalsFavor');
+                expect(request.body[0]).to.have.property('goalsOwn');
+                expect(request.body[0]).to.have.property('goalsBalance');
+                expect(request.body[0]).to.have.property('efficiency');
             });
-            it('Deve retornar todos os matchs', () => {
-                expect(request.body).to.have.length(2);
-                expect(request.body).to.deep.eq(matchsMock.matchsWithoutFilter);
+            it('Deve retornar a tabela filtrada por Home', () => {
+                expect(request.body).to.have.length(clubsMock.allclubs.length);
+                expect(request.body).to.deep.eq(leaderboardsMock.leaderboardFilterHome);
             });
         });
     });
+});

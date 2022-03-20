@@ -1,84 +1,47 @@
-import Club, { ClubStatus, ClubBalanceStatus } from '../interfaces/clubsInterfaces';
+import Club, { ClubStatus } from '../interfaces/clubsInterfaces';
 import { Match } from '../interfaces/matchsInterfaces';
+import getStatusFromAllClubs from './getStatusFromAllClubs';
 
-const getAllMatchsFromClub = (matchs: Match[], { id }: Club) =>
-  matchs.filter(({ homeTeam, awayTeam, inProgress }) =>
-    (homeTeam === id || id === awayTeam) && !inProgress);
+// Tiebreaker ====> 1º totalVictories; 2º goalsBalance; 3º goalsFavor; 4º goalsOwn.
 
-const verifyWinner = (match: Match, id: number): number => {
-  if (match.homeTeamGoals > match.awayTeamGoals) {
-    return match.homeTeam === id ? 3 : 0;
-  }
-  if (match.awayTeamGoals > match.homeTeamGoals) {
-    return match.awayTeam === id ? 3 : 0;
-  }
-  return 1;
+const filters = {
+  totalVictories: (club1: ClubStatus, club2: ClubStatus) =>
+    club2.totalVictories - club1.totalVictories,
+  goalsBalance: (club1: ClubStatus, club2: ClubStatus) => club2.goalsBalance - club1.goalsBalance,
+  goalsFavor: (club1: ClubStatus, club2: ClubStatus) => club2.goalsFavor - club1.goalsFavor,
+  goalsOwn: (club1: ClubStatus, club2: ClubStatus) => club1.goalsOwn - club2.goalsOwn,
 };
 
-const getFavorAndOwnGoalsBalance = (matchs: Match[], id: number): ClubBalanceStatus => {
-  let goalsFavor = 0;
-  let goalsOwn = 0;
+const handleTiebreaker = (club1: ClubStatus, club2: ClubStatus): number => {
+  let winner = 0;
+  const funcs = Object.values(filters);
 
-  matchs.forEach((match) => {
-    if (match.homeTeam === id) {
-      goalsOwn += match.awayTeamGoals;
-      goalsFavor += match.homeTeamGoals;
-    } else {
-      goalsOwn += match.homeTeamGoals;
-      goalsFavor += match.awayTeamGoals;
+  for (let index = 0; index < funcs.length; index += 1) {
+    const func = funcs[index];
+
+    winner = func(club1, club2);
+    if (winner !== 0) {
+      break;
     }
+  }
+  return winner;
+};
+
+const generateLeaderboard = (matchs: Match[], clubs: Club[]) => {
+  const allClubs: ClubStatus[] = getStatusFromAllClubs(matchs, clubs);
+
+  allClubs.sort((club1, club2) => {
+    const points = club2.totalPoints - club1.totalPoints;
+
+    if (points === 0) {
+      return handleTiebreaker(club1, club2);
+    }
+    return points;
   });
 
-  const goalsBalance = goalsFavor > goalsOwn
-    ? goalsFavor - goalsOwn : goalsOwn - goalsFavor;
-
-  return {
-    goalsFavor,
-    goalsOwn,
-    goalsBalance,
-  };
+  return allClubs;
 };
 
-const getWinLossDrawCount = (matchs: Match[], id: number, filter: number): number => {
-  const total = matchs.reduce((sum, match) => {
-    const result = verifyWinner(match, id) === filter ? 1 : 0;
-    return sum + result;
-  }, 0);
-  return total;
-};
+export default generateLeaderboard;
 
-const handletotalPoints = (matchs: Match[], id: number): number => {
-  const total = matchs.reduce((sum, match) => {
-    const result = verifyWinner(match, id);
-    return sum + result;
-  }, 0);
-  return total;
-};
-
-const WIN = 3;
-const LOSS = 0;
-const DRAW = 1;
-
-const getStatusFromAllClubs = (matchs: Match[], clubs: Club[]): ClubStatus[] =>
-  clubs.map((club) => {
-    const allMatchs: Match[] = getAllMatchsFromClub(matchs, club);
-
-    const totalPoints = handletotalPoints(allMatchs, club.id);
-    const { goalsBalance, goalsFavor, goalsOwn } = getFavorAndOwnGoalsBalance(allMatchs, club.id);
-    const efficiency = Number(((totalPoints / (allMatchs.length * 3)) * 100).toFixed(2));
-
-    return {
-      name: club.clubName,
-      totalPoints,
-      totalGames: allMatchs.length,
-      totalVictories: getWinLossDrawCount(allMatchs, club.id, WIN),
-      totalDraws: getWinLossDrawCount(allMatchs, club.id, DRAW),
-      totalLosses: getWinLossDrawCount(allMatchs, club.id, LOSS),
-      goalsBalance,
-      goalsFavor,
-      goalsOwn,
-      efficiency,
-    };
-  });
-
-export default getStatusFromAllClubs;
+// console.log(generalFilter(leaderboardsMock.allMatchs,clubsMock.allclubs));

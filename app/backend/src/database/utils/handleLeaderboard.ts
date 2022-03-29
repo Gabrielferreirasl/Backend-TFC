@@ -6,6 +6,7 @@ import Filter from '../interfaces/leaderboardInterfaces';
 // Tiebreaker ====> 1º totalVictories; 2º goalsBalance; 3º goalsFavor; 4º goalsOwn.
 
 const filters = {
+  totalPoints: (club1: ClubStatus, club2: ClubStatus) => club2.totalPoints - club1.totalPoints,
   totalVictories: (club1: ClubStatus, club2: ClubStatus) =>
     club2.totalVictories - club1.totalVictories,
   goalsBalance: (club1: ClubStatus, club2: ClubStatus) => club2.goalsBalance - club1.goalsBalance,
@@ -31,14 +32,7 @@ const handleTiebreaker = (club1: ClubStatus, club2: ClubStatus): number => {
 const generateLeaderboard = (matchs: Match[], clubs: Club[], filter: Filter) => {
   const allClubs: ClubStatus[] = getStatusFromAllClubs(matchs, clubs, filter);
 
-  allClubs.sort((club1, club2) => {
-    const points = club2.totalPoints - club1.totalPoints;
-
-    if (points === 0) {
-      return handleTiebreaker(club1, club2);
-    }
-    return points;
-  });
+  allClubs.sort(handleTiebreaker);
 
   return allClubs;
 };

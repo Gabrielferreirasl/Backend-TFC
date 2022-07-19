@@ -4,3 +4,24 @@ TFC is an informative website about soccer matches and standings! It was develop
 
 
 Deploy Aws: http://ec2-3-92-187-78.compute-1.amazonaws.com:3000
+
+## After downloading the project:
+create an .env file at app/backend to connect to your local MySQL database:
+```
+example:
+
+PORT=3009
+DB_USER=root
+DB_PASS=123456
+DB_HOST=db
+DB_PORT=3306
+```
+
+Then:
+
+```
+npm run install:apps
+npm run compose:up   // to start the app
+npm run compose:down   // to drop
+Go to: http://localhost:3000
+```
